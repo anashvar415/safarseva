@@ -1,0 +1,137 @@
+<% layout("/layouts/boilerplate.ejs") %>
+ 
+
+   <% if (error && error.length > 0) { %>
+  <div class="alert alert-danger alert-dismissible fade show text-center fw-bold" role="alert">
+    <%= error[0] %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% } %>
+  <div class="container my-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8 col-lg-6">
+        <div class="card shadow-lg border-0">
+          <% if (listingData.image && listingData.image.url) { %>
+            <img src="<%= listingData.image.url %>" class="card-img-top" alt="Listing Image" style="height:300px; object-fit:cover;">
+          <% } else { %>
+            <img src="/images/default.webp" class="card-img-top" alt="Default Image" style="height:300px; object-fit:cover;">
+          <% } %>
+          <div class="card-body">
+            <h3 class="card-title fw-bold mb-2"><%= listingData.title %></h3>
+            <p class="card-text text-muted mb-1"><i class="bi bi-geo-alt"></i> <%= listingData.location %></p>
+             <p class="card-text fw-bold mb-2">Owned By : <%= listingData.owner.username %></p>
+            <p class="card-text text-muted mb-3"><i class="bi bi-tags"></i> <%= listingData.category %></p>
+            <p class="card-text mb-3"><%= listingData.description %></p>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="badge bg-success fs-5">&#8377; <%= listingData.price %>/night</span>
+              <div class="d-flex">
+                <% if(currentUser && currentUser._id.equals(listingData.owner._id)) { %>
+                 
+                <form method="POST" action="/listing/<%= listingData._id %>?_method=DELETE" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this listing?');">
+                  <button class="btn btn-outline-danger btn-sm">Delete</button>
+                </form>
+                <a href="/listing/<%= listingData._id %>/edit" class="btn btn-outline-primary btn-sm ms-2">Edit</a>
+              <% } %></div>
+            </div>
+          </div>
+        </div>
+       <%if(currentUser && currentUser._id) { %>
+        <div class="card mt-4 shadow-sm border-0">
+          <div class="card-body">
+            <h5 class="card-title fw-bold mb-3">Leave a Review</h5>
+            <form action="/listing/<%= listingData._id %>/reviews" method="POST">
+              <div class="mb-3">
+                <label for="reviewText" class="form-label">Your Review</label>
+                <textarea class="form-control" id="reviewText" name="review[comment]" rows="3" ></textarea>
+              </div>
+             <div class="mb-3">
+  <label class="form-label d-block mb-2">Rating</label>
+  <div class="star-rating">
+    <input type="radio" id="star5" name="review[rating]" value="5" required>
+    <label for="star5" title="5 stars"><i class="bi bi-star-fill"></i></label>
+    <input type="radio" id="star4" name="review[rating]" value="4">
+    <label for="star4" title="4 stars"><i class="bi bi-star-fill"></i></label>
+    <input type="radio" id="star3" name="review[rating]" value="3">
+    <label for="star3" title="3 stars"><i class="bi bi-star-fill"></i></label>
+    <input type="radio" id="star2" name="review[rating]" value="2">
+    <label for="star2" title="2 stars"><i class="bi bi-star-fill"></i></label>
+    <input type="radio" id="star1" name="review[rating]" value="1">
+    <label for="star1" title="1 star"><i class="bi bi-star-fill"></i></label>
+  </div>
+</div>
+
+<style>
+.star-rating {
+  direction: rtl;
+  display: inline-flex;
+  gap: 2px;
+}
+.star-rating input[type="radio"] {
+  display: none;
+}
+.star-rating label {
+  color: #bbb;
+  font-size: 2rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.star-rating input[type="radio"]:checked ~ label,
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+  color: #ffc107;
+}
+</style>
+              <button type="submit" class="btn btn-dark btn-sm">Submit Review</button>
+            </form>
+          </div>
+        </div>
+        <% } %>
+        <% if (listingData.reviews && listingData.reviews.length > 0) { %>
+          
+        <div class="card mt-4 shadow-sm border-0">
+  <div class="card-body">
+    <h5 class="card-title fw-bold mb-3">All Reviews</h5>
+       <% for( review of listingData.reviews) { %>
+        <div class="mb-3 p-3 border rounded bg-light">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+        
+            
+            <div class="text" style="font-size: 0.97rem;"><%= review.comment %></div>
+             <span class="badge bg-warning text-dark"><%= review.rating %> ★</span>
+        </div>
+        <div>
+        <p class="card-text fw-bold mb-2">Wrote By :  <%= review.author.username %></p>
+        </div>
+         <div class="text" style="font-size: 0.97rem;"><%= review.createdAt%></div>
+        <% if(currentUser && currentUser._id.equals(review.author._id)) { %>
+            <div class="d-flex justify-content-end mt-2">
+              <form method="POST" action="/listing/<%= listingData._id %>/reviews/<%=review._id %>?_method=DELETE" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this review?');">
+                <button class="btn btn-outline-danger btn-sm">Delete</button>
+              </form>
+            </div>
+            <% } %>
+          
+          
+  </div>
+      <% } %>
+    
+  </div>
+</div>
+<% } %>
+      
+      <div>
+        <h4 class="mt-4">Location on Map</h4>
+        <p class="text-muted">Drag the map to explore the area.</p>
+      <div id="map" class="col-md-12 mt-4" style="height: 400px;">
+        
+      </div>
+      </div>
+      </div>
+    </div>
+  </div>
+ <script src="https://api.mapbox.com/mapbox-gl-js/v3.12.0/mapbox-gl.js"></script>
+  <script>
+  window.mapToken = "<%=process.env.MAP_TOKEN%>";
+  window.coordinates = <%- JSON.stringify(listingData.geometry.coordinates) %>;
+</script>
+<script src="/js/showMap.js"></script>

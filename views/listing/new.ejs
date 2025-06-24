@@ -1,0 +1,44 @@
+<% layout("/layouts/boilerplate.ejs") %>
+<body>
+   <form action="/listing" method="POST" class="p-4 bg-white shadow-sm"  enctype="multipart/form-data" style="max-width: 600px; margin: 2rem auto;">
+  <h3 class="mb-4 text-center fw-bold" style="letter-spacing:1px;">Add a Listing</h3>
+  <div class="mb-3">
+    <label for="title" class="form-label fw-semibold">Title</label>
+    <input type="text" class="form-control form-control-lg" id="title" name="listing[title]" required style="width:100%;">
+  </div>
+  <div class="mb-3">
+    <label for="description" class="form-label fw-semibold">Description</label>
+    <textarea class="form-control form-control-lg" id="description" name="listing[description]" rows="3" required style="width:100%;"></textarea>
+  </div>
+  <div class="mb-3">
+    <label for="price" class="form-label fw-semibold">Price (₹)</label>
+    <input type="number" class="form-control form-control-lg" id="price" name="listing[price]" min="0" required style="width:100%;">
+  </div>
+  <div class="mb-3">
+    <label for="location" class="form-label fw-semibold">Location</label>
+    <input type="text" class="form-control form-control-lg" id="location" name="listing[location]" required style="width:100%;">
+  </div>
+  <div class="mb-3">
+  <label for="category" class="form-label fw-semibold">Category</label>
+  <select class="form-control form-control-lg" id="category" name="listing[category]" required style="width:100%;">
+    <option value="">Select Category</option>
+    <option value="Luxury">Luxury</option>
+    <option value="Budget">Budget</option>
+    <option value="Family">Family</option>
+    <option value="Business">Business</option>
+    <option value="Resort">Resort</option>
+    <option value="Homestay">Homestay</option>
+    <option value="Beach">Beach</option>
+    <option value="Boutique">Boutique</option>
+    <option value="Wellness">Wellness</option>
+   
+  </select>
+</div>
+  
+  <div class="mb-3">
+    <label for="image" class="form-label fw-semibold">Upload Image</label>
+    <input type="file" class="form-control form-control-lg" id="image" name="listing[image]"  style="width:100%;">
+  </div>
+  <button type="submit"  class="btn btn-outline-primary btn-sm w-50">Add</button>
+</form>
+</body>
