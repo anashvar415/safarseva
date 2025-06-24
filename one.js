@@ -95,7 +95,9 @@ app.use((req, res, next) => {
  
   next();
 });
-
+app.get('/', (req, res) => {
+    res.redirect('/listing');
+});
 app.get('/signup', (req, res) => {
     res.render('./users/signup.ejs');});
 
