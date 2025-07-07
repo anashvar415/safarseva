@@ -31,7 +31,13 @@ const listingSche=new schema (
             coordinates: {
                 type: [Number],
                 required: true
-            }
+            },
+             unavailableDates: [
+    {
+      start: { type: Date},
+      end: { type: Date }
+    }]
+
         }
         
     }
@@ -41,7 +47,7 @@ listingSche.post('findOneAndDelete', async function(listing) {
    if(listing){
         await review.deleteMany({
             _id: {
-                $in: listingSche.reviews
+                $in: listing.reviews
             }
         });
     }

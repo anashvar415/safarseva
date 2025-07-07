@@ -3,6 +3,7 @@ const app = express();
 const path = require('path');
 const mongoose = require('mongoose');
 const listing = require('./models/listing.js');
+const booking = require('./models/booking.js');
 const review = require('./models/review.js');
 const methodoverride = require("method-override");
 const ejsmate = require("ejs-mate")
@@ -15,7 +16,7 @@ require('dotenv').config();
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
 const mapToken = process.env.MAP_TOKEN;
 const geocodingClient = mbxGeocoding({ accessToken: mapToken });
-//const passportLocalMongoose=require("passport-local-mongoose");
+
 app.engine('ejs', ejsmate);
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
@@ -65,7 +66,7 @@ passport.use(new LocalStrategy(user.authenticate()));
 passport.serializeUser(user.serializeUser());
 passport.deserializeUser(user.deserializeUser());
 
-const port = 8080;
+
 
 const dbUrl=  process.env.ATLAS_URL;
 
@@ -95,7 +96,9 @@ app.use((req, res, next) => {
  
   next();
 });
-
+app.get('/', (req, res) => {
+    res.redirect('/listing');
+});
 app.get('/signup', (req, res) => {
     res.render('./users/signup.ejs');});
 
@@ -292,11 +295,44 @@ app.delete("/listing/:id", isLoggedIn,async (req, res) => {
          res.redirect('/listing');
 });
 
+app.get('/listings/:id/book',isLoggedIn,async (req,res) =>{
+    const listingData = await listing.findById(req.params.id);
+
+res.render('./listing/booking.ejs',{listingData});
 
 
+});
 
 
+app.post('/listings/:id/book', async (req, res) => {
+  const checkIn = new Date(req.body.checkIn);
+const checkOut = new Date(req.body.checkOut);
+  const id=req.params.id;
+  const listingData = await listing.findById(req.params.id);
 
-app.listen(port,()=> {
+  const isUnavailable = listingData.unavailableDates.some(dateRange =>
+    !(checkOut <= dateRange.start || checkIn >= dateRange.end)
+  );
+
+  if (isUnavailable) {
+   req.flash("error","Dates not available");
+   res.redirect(`/listings/${id}/book`)
+  }
+
+  const bookingData = new booking({
+    userId: req.user._id,
+    listingId: listingData._id,
+    checkIn,
+    checkOut,
+    status: 'Pending'
+  });
+
+  await bookingData.save();
+
+  console.log("booking done");
+});
+
+
+app.listen(8080,()=> {
     console.log("connected to server ");
 });
