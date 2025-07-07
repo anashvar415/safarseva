@@ -3,7 +3,7 @@ const app = express();
 const path = require('path');
 const mongoose = require('mongoose');
 const listing = require('./models/listing.js');
-const booking = require('./models/booking.js');
+
 const review = require('./models/review.js');
 const methodoverride = require("method-override");
 const ejsmate = require("ejs-mate")
