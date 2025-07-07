@@ -294,3 +294,9 @@ app.delete("/listing/:id", isLoggedIn,async (req, res) => {
      await   listing.findByIdAndDelete(id);
          res.redirect('/listing');
 });
+
+
+
+app.listen(8080,()=> {
+    console.log("connected to server ");
+});
