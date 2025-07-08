@@ -1,0 +1,44 @@
+<% layout("/layouts/boilerplate.ejs") %>
+ 
+
+   <% if (error && error.length > 0) { %>
+  <div class="alert alert-danger alert-dismissible fade show text-center fw-bold" role="alert">
+    <%= error[0] %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% } %>
+<section class="container my-5">
+  <h2 class="mb-4">📋 Bookings for "<%= listing.title %>"</h2>
+  <% if (bookings.length > 0) { %>
+    <div class="list-group">
+      <% bookings.forEach(booking => { %>
+        <div class="list-group-item">
+          <h5 class="mb-1">Booked by: <%= booking.user.username %></h5>
+          <p class="mb-1">
+            From: <%= booking.startDate.toDateString() %> <br>
+            To: <%= booking.endDate.toDateString() %> <br>
+            Status: 
+            <span class="badge 
+              <%= booking.status === 'Confirmed' ? 'bg-success' : booking.status === 'Cancelled' ? 'bg-danger' : 'bg-warning text-dark' %>">
+              <%= booking.status %>
+            </span>
+          </p>
+          <div class="d-flex gap-2">
+            <% if (booking.status !== 'Confirmed') { %>
+              <form action="/bookings/<%= booking._id %>/confirm" method="POST">
+                <button class="btn btn-success btn-sm">Confirm</button>
+              </form>
+            <% } %>
+            <% if (booking.status !== 'Cancelled') { %>
+              <form action="/bookings/<%= booking._id %>/cancel" method="POST">
+                <button class="btn btn-danger btn-sm">Cancel</button>
+              </form>
+            <% } %>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <div class="alert alert-info">No bookings for this listing yet.</div>
+  <% } %>
+</section>

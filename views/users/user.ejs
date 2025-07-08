@@ -31,7 +31,9 @@
               <h5 class="card-title"><%= listing.title %></h5>
               <p class="card-text text-muted"><i class="bi bi-geo-alt-fill"></i> <%= listing.location %></p>
               <a href="/listing/<%= listing._id %>/edit" class="btn btn-outline-primary btn-sm">Edit</a>
-            </div>
+            <a href="/listing/<%= listing._id %>/bookings" class="btn btn-outline-secondary btn-sm">View Bookings</a>
+      </div>
+ </div>
           </div>
         </div>
       <% }) %>

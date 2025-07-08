@@ -3,7 +3,7 @@ const app = express();
 const path = require('path');
 const mongoose = require('mongoose');
 const listing = require('./models/listing.js');
-const Booking = require('./models/booking.js')
+const booking = require('./models/booking.js')
 const review = require('./models/review.js');
 const methodoverride = require("method-override");
 const ejsmate = require("ejs-mate")
@@ -147,8 +147,8 @@ app.get('/', (req, res) => {
     res.redirect('/listing');
 });
 
-app.get('/dashboard', async (req, res) => {
-  const user = await user.findById(req.user._id)
+app.get('/dashboard',isLoggedIn, async (req, res) => {
+  const users = await user.findById(req.user._id)
     .populate('listings')
     .populate({
       path: 'bookings',
@@ -156,8 +156,24 @@ app.get('/dashboard', async (req, res) => {
     })
     .populate('reviews');
 
-  res.render('./users/user.ejs', { user });
+  res.render('./users/user.ejs', { users });
 });
+
+app.get('/listing/:id/bookings', isLoggedIn,async (req, res) => {
+  const listingData = await listing.findById(req.params.id);
+  const bookings = await booking.find({ listing: listingData._id }).populate('user');
+  res.render('./listing/listingBookings', { listing:listingData, bookings });
+});
+app.post('/bookings/:id/confirm', async (req, res) => {
+  await booking.findByIdAndUpdate(req.params.id, { status: 'Confirmed' });
+  res.redirect('back');
+});
+
+app.post('/bookings/:id/cancel', async (req, res) => {
+  await booking.findByIdAndUpdate(req.params.id, { status: 'Cancelled' });
+  res.redirect('back');
+});
+
 
 
 
@@ -383,14 +399,16 @@ const _id=req.params.id;
     res.redirect(`/listing/${_id}/book`)
   }
 
-  const booking = new Booking({
+  const bookings = new booking({
     userId: req.user._id,
     listingId: listingData._id,
     checkIn: requestedStart,
     checkOut: requestedEnd
   });
 
-  await booking.save();
+  await bookings.save();
+  listingData.unavailableDates.push({ start: requestedStart, end: requestedEnd });
+await listingData.save();
   res.send(' proceed to payment'); 
 
 });
