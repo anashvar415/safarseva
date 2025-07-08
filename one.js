@@ -13,6 +13,19 @@ const LocalStrategy = require('passport-local');
 if(process.env.NODE_ENV !== "production") {
 require('dotenv').config();
 }
+const helmet = require('helmet');
+
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "https://cdn.jsdelivr.net", "'unsafe-inline'"],
+      styleSrc: ["'self'", "https://cdn.jsdelivr.net", "'unsafe-inline'"],
+      fontSrc: ["'self'", "https://fonts.googleapis.com", "https://fonts.gstatic.com"],
+      imgSrc: ["'self'", "data:"],
+    },
+  })
+);
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
 const mapToken = process.env.MAP_TOKEN;
 const geocodingClient = mbxGeocoding({ accessToken: mapToken });
@@ -317,7 +330,7 @@ const _id=req.params.id;
 
   if (isUnavailable) {
     req.flash("error","Selected dates not available")
-    res.redirect(`./listing/${_id}/book`)
+    res.redirect(`/listing/${_id}/book`)
   }
 
   const booking = new Booking({
