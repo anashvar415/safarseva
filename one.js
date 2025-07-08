@@ -26,7 +26,8 @@ app.use(
         "https://cdn.jsdelivr.net",
         "https://cdnjs.cloudflare.com",
         "https://api.mapbox.com",
-        "'unsafe-inline'"
+        "'unsafe-inline'",
+         "'unsafe-eval'"
       ],
       styleSrc: [
         "'self'",
