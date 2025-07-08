@@ -340,14 +340,14 @@ app.delete("/listing/:id", isLoggedIn,async (req, res) => {
      await   listing.findByIdAndDelete(id);
          res.redirect('/listing');
 });
-app.get('/listings/:id/book',isLoggedIn, async (req, res) => {
+app.get('/listing/:id/book',isLoggedIn, async (req, res) => {
     const listingData = await listing.findById(req.params.id);
     res.render("./listing/book.ejs",{listingData})
 
 
 
 })
-app.post('/listings/:id/book', async (req, res) => {
+app.post('/listing/:id/book', async (req, res) => {
   const { checkIn, checkOut } = req.body;
   const listingData = await listing.findById(req.params.id);
 const _id=req.params.id;
