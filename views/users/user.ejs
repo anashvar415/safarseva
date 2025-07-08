@@ -1,0 +1,89 @@
+<% layout("/layouts/boilerplate.ejs") %>
+ 
+
+   <% if (error && error.length > 0) { %>
+  <div class="alert alert-danger alert-dismissible fade show text-center fw-bold" role="alert">
+    <%= error[0] %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% } %>
+
+<section class="container my-5">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h3 class="card-title mb-3">👤 User Profile</h3>
+      <p class="mb-1"><strong>Username:</strong> <%= user.username %></p>
+      <p class="mb-1"><strong>Email:</strong> <%= user.email %></p>
+      
+    </div>
+  </div>
+</section>
+
+
+<section class="container my-5">
+  <h2 class="mb-4">📌 Your Listings</h2>
+  <% if (user.listings.length > 0) { %>
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+      <% user.listings.forEach(listing => { %>
+        <div class="col">
+          <div class="card shadow-sm h-100">
+            <div class="card-body">
+              <h5 class="card-title"><%= listing.title %></h5>
+              <p class="card-text text-muted"><i class="bi bi-geo-alt-fill"></i> <%= listing.location %></p>
+              <a href="/listing/<%= listing._id %>/edit" class="btn btn-outline-primary btn-sm">Edit</a>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <div class="alert alert-info">No listings yet.</div>
+  <% } %>
+</section>
+<section class="container my-5">
+  <h2 class="mb-4">📅 Your Bookings</h2>
+  <% if (user.bookings.length > 0) { %>
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+      <% user.bookings.forEach(booking => { %>
+        <div class="col">
+          <div class="card h-100 shadow-sm">
+            <div class="card-body">
+              <h5 class="card-title"><%= booking.listingTitle %></h5>
+              <p class="card-text">
+                <strong>From:</strong> <%= booking.startDate %><br>
+                <strong>To:</strong> <%= booking.endDate %><br>
+                <strong>Status:</strong> 
+                <span class="badge 
+                  <%= booking.status === 'Confirmed' ? 'bg-success' : booking.status === 'Cancelled' ? 'bg-danger' : 'bg-warning text-dark' %>">
+                  <%= booking.status %>
+                </span>
+              </p>
+            
+              </div>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <div class="alert alert-info">You haven't made any bookings yet.</div>
+  <% } %>
+</section>
+<section class="container my-5">
+  <h2 class="mb-4">⭐ Your Reviews</h2>
+  <% if (user.reviews.length > 0) { %>
+    <div class="list-group">
+      <% user.reviews.forEach(review => { %>
+        <div class="list-group-item list-group-item-action flex-column align-items-start">
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1"><%= review.listingTitle %></h5>
+            <small class="text-warning fw-bold">Rating: <%= review.rating %>/5</small>
+          </div>
+          <p class="mb-1"><%= review.comment %></p>
+        </div>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <div class="alert alert-info">No reviews yet.</div>
+  <% } %>
+</section>

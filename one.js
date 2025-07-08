@@ -146,6 +146,22 @@ app.use((req, res, next) => {
 app.get('/', (req, res) => {
     res.redirect('/listing');
 });
+
+app.get('/dashboard', async (req, res) => {
+  const user = await user.findById(req.user._id)
+    .populate('listings')
+    .populate({
+      path: 'bookings',
+      populate: { path: 'listing' }
+    })
+    .populate('reviews');
+
+  res.render('./users/user.ejs', { user });
+});
+
+
+
+
 app.get('/signup', (req, res) => {
     res.render('./users/signup.ejs');});
 
@@ -355,7 +371,7 @@ const _id=req.params.id;
   const requestedStart = new Date(checkIn);
   const requestedEnd = new Date(checkOut);
 
-  const isUnavailable = listingData.unavailableDates.some(range => {
+  const isUnavailable = (listingData.unavailableDates|| []).some(range => {
     return (
       requestedStart <= new Date(range.end) &&
       requestedEnd >= new Date(range.start)
