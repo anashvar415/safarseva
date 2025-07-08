@@ -148,15 +148,21 @@ app.get('/', (req, res) => {
 });
 
 app.get('/dashboard',isLoggedIn, async (req, res) => {
-  const users = await user.findById(req.user._id)
-    .populate('listings')
-    .populate({
-      path: 'bookings',
-      populate: { path: 'listing' }
-    })
-    .populate('reviews');
+  const userId = await user.findById(req.user._id)
+    const listings = await listing.find({ owner: userId }).populate('reviews');
 
-  res.render('./users/user.ejs', { users });
+    const bookings = await booking.find({ userId }).populate({
+      path: 'listingId',
+      populate: { path: 'owner' }
+    });
+
+   
+    const reviews = await review.find({ author: userId });
+
+    res.render('./users/user.ejs', {
+      listings,
+      bookings,
+      reviews });
 });
 
 app.get('/listing/:id/bookings', isLoggedIn,async (req, res) => {
