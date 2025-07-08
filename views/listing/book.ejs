@@ -7,7 +7,7 @@
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
   </div>
 <% } %>
-<div class="container mt-4">
+<<div class="container mt-4">
   <div class="card shadow-sm mb-4">
     <div class="card-body">
       <h2 class="card-title"><%= listingData.title %></h2>
@@ -18,18 +18,32 @@
   </div>
 
   <form action="/listing/<%= listingData._id %>/book" method="POST" class="p-4 border rounded shadow-sm bg-light">
-  <div class="mb-3">
-    <label for="checkIn" class="form-label">Check-In:</label>
-    <input type="text" id="checkIn" name="checkIn" class="form-control" required>
-  </div>
-  <div class="mb-3">
-    <label for="checkOut" class="form-label">Check-Out:</label>
-    <input type="text" id="checkOut" name="checkOut" class="form-control" required>
-  </div>
-  <button type="submit" class="btn btn-primary">Book Now</button>
-</form>
- 
-  <script>
-    flatpickr("#checkIn", { dateFormat: "Y-m-d" });
-    flatpickr("#checkOut", { dateFormat: "Y-m-d" });
-  </script>
+    <div class="mb-3">
+      <label for="checkIn" class="form-label">Check-In:</label>
+      <input type="text" id="checkIn" name="checkIn" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label for="checkOut" class="form-label">Check-Out:</label>
+      <input type="text" id="checkOut" name="checkOut" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Book Now</button>
+  </form>
+</div>
+
+<!-- Flatpickr Script -->
+<script>
+  const checkIn = flatpickr("#checkIn", {
+    dateFormat: "Y-m-d",
+    minDate: "today",
+    onChange: function(selectedDates, dateStr, instance) {
+      if (selectedDates.length > 0) {
+        checkOut.set("minDate", dateStr);
+      }
+    }
+  });
+
+  const checkOut = flatpickr("#checkOut", {
+    dateFormat: "Y-m-d",
+    minDate: "today"
+  });
+</script>
