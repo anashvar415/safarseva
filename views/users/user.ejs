@@ -22,9 +22,9 @@
 
 <section class="container my-5">
   <h2 class="mb-4">📌 Your Listings</h2>
-  <% if (user.listings.length > 0) { %>
+  <% if (listings.length > 0) { %>
     <div class="row row-cols-1 row-cols-md-2 g-4">
-      <% user.listings.forEach(listing => { %>
+      <% listings.forEach(listing => { %>
         <div class="col">
           <div class="card shadow-sm h-100">
             <div class="card-body">
@@ -44,9 +44,9 @@
 </section>
 <section class="container my-5">
   <h2 class="mb-4">📅 Your Bookings</h2>
-  <% if (user.bookings.length > 0) { %>
+  <% if (bookings.length > 0) { %>
     <div class="row row-cols-1 row-cols-md-2 g-4">
-      <% user.bookings.forEach(booking => { %>
+      <% bookings.forEach(booking => { %>
         <div class="col">
           <div class="card h-100 shadow-sm">
             <div class="card-body">
@@ -73,9 +73,9 @@
 </section>
 <section class="container my-5">
   <h2 class="mb-4">⭐ Your Reviews</h2>
-  <% if (user.reviews.length > 0) { %>
+  <% if (reviews.length > 0) { %>
     <div class="list-group">
-      <% user.reviews.forEach(review => { %>
+      <% reviews.forEach(review => { %>
         <div class="list-group-item list-group-item-action flex-column align-items-start">
           <div class="d-flex w-100 justify-content-between">
             <h5 class="mb-1"><%= review.listingTitle %></h5>
