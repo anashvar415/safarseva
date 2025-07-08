@@ -3,7 +3,7 @@ const app = express();
 const path = require('path');
 const mongoose = require('mongoose');
 const listing = require('./models/listing.js');
-
+const Booking = require('./models/booking.js')
 const review = require('./models/review.js');
 const methodoverride = require("method-override");
 const ejsmate = require("ejs-mate")
@@ -294,8 +294,43 @@ app.delete("/listing/:id", isLoggedIn,async (req, res) => {
      await   listing.findByIdAndDelete(id);
          res.redirect('/listing');
 });
+app.get('/listings/:id/book',isLoggedIn, async (req, res) => {
+    const listingData = await listing.findById(req.params.id);
+    res.render("./listing/book.ejs",{listingData})
 
 
+
+})
+app.post('/listings/:id/book', async (req, res) => {
+  const { checkIn, checkOut } = req.body;
+  const listingData = await listing.findById(req.params.id);
+const _id=req.params.id;
+  const requestedStart = new Date(checkIn);
+  const requestedEnd = new Date(checkOut);
+
+  const isUnavailable = listingData.unavailableDates.some(range => {
+    return (
+      requestedStart <= new Date(range.end) &&
+      requestedEnd >= new Date(range.start)
+    );
+  });
+
+  if (isUnavailable) {
+    req.flash("error","Selected dates not available")
+    res.redirect(`./listing/${_id}/book`)
+  }
+
+  const booking = new Booking({
+    userId: req.user._id,
+    listingId: listingData._id,
+    checkIn: requestedStart,
+    checkOut: requestedEnd
+  });
+
+  await booking.save();
+  res.send(' proceed to payment'); 
+
+});
 
 app.listen(8080,()=> {
     console.log("connected to server ");

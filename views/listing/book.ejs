@@ -1,0 +1,35 @@
+<% layout("/layouts/boilerplate.ejs") %>
+ 
+
+   <% if (error && error.length > 0) { %>
+  <div class="alert alert-danger alert-dismissible fade show text-center fw-bold" role="alert">
+    <%= error[0] %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% } %>
+<div class="container mt-4">
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h2 class="card-title"><%= listingData.title %></h2>
+      <p class="card-text"><strong>Location:</strong> <%= listingData.location %></p>
+      <p class="card-text"><strong>Price per night:</strong> ₹<%= listingData.price %></p>
+      <p class="card-text"><%= listingData.description %></p>
+    </div>
+  </div>
+
+  <form action="/listings/<%= listingData._id %>/book" method="POST" class="p-4 border rounded shadow-sm bg-light">
+  <div class="mb-3">
+    <label for="checkIn" class="form-label">Check-In:</label>
+    <input type="text" id="checkIn" name="checkIn" class="form-control" required>
+  </div>
+  <div class="mb-3">
+    <label for="checkOut" class="form-label">Check-Out:</label>
+    <input type="text" id="checkOut" name="checkOut" class="form-control" required>
+  </div>
+  <button type="submit" class="btn btn-primary">Book Now</button>
+</form>
+ 
+  <script>
+    flatpickr("#checkIn", { dateFormat: "Y-m-d" });
+    flatpickr("#checkOut", { dateFormat: "Y-m-d" });
+  </script>

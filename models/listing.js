@@ -31,7 +31,14 @@ const listingSche=new schema (
             coordinates: {
                 type: [Number],
                 required: true
-            }
+            } ,
+            unavailableDates: [
+    {
+      start: Date,
+      end: Date
+    }
+  ]
+
         }
         
     }
