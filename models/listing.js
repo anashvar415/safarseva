@@ -33,9 +33,9 @@ const listingSche=new schema (
                 required: true
             } ,
             unavailableDates: [
-    {
-      start: Date,
-      end: Date
+    {      start: new Date("2025-07-10"),
+      end: new Date("2025-07-15")
+
     }
   ]
 
