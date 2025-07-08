@@ -33,11 +33,18 @@ const listingSche=new schema (
                 required: true
             } ,
             unavailableDates: [
-    {      start: new Date("2025-07-10"),
-      end: new Date("2025-07-15")
-
+    {
+      start: Date,
+      end: Date
     }
-  ]
+  ],
+   default: [
+      {
+        start: new Date("2025-07-10"),
+        end: new Date("2025-07-15")
+      }
+    ]
+
 
         }
         
