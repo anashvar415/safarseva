@@ -38,12 +38,7 @@ const listingSche=new schema (
       end: Date
     }
   ],
-   default: [
-      {
-        start: new Date("2025-07-10"),
-        end: new Date("2025-07-15")
-      }
-    ]
+
 
 
         }
