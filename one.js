@@ -168,10 +168,11 @@ app.get('/dashboard',isLoggedIn, async (req, res) => {
 
 app.get('/listing/:id/bookings', isLoggedIn,async (req, res) => {
   const listingData = await listing.findById(req.params.id);
-  const bookings = await booking.find({ listing: listingData._id }).populate('user');
+  const bookings = await booking.find({ listingId: listingData._id }).populate('user');
   res.render('./listing/listingBooking', { listing:listingData, bookings });
 });
 app.post('/bookings/:id/confirm', async (req, res) => {
+  
   await booking.findByIdAndUpdate(req.params.id, { status: 'Confirmed' });
   res.redirect('/dashboard');
 });
@@ -386,15 +387,22 @@ app.get('/listing/:id/book',isLoggedIn, async (req, res) => {
 
 
 
-})
-app.post('/listing/:id/book', async (req, res) => {
+});
+app.post('/listing/:id/book', isLoggedIn, async (req, res) => {
   const { checkIn, checkOut } = req.body;
   const listingData = await listing.findById(req.params.id);
-const _id=req.params.id;
+
+  // ✅ Validate input
+  if (!checkIn || !checkOut) {
+    req.flash("error", "Please select valid check-in and check-out dates.");
+    return res.redirect(`/listing/${req.params.id}/book`);
+  }
+
   const requestedStart = new Date(checkIn);
   const requestedEnd = new Date(checkOut);
 
-  const isUnavailable = (listingData.unavailableDates|| []).some(range => {
+  // ✅ Check for date conflicts
+  const isUnavailable = (listingData.unavailableDates || []).some(range => {
     return (
       requestedStart <= new Date(range.end) &&
       requestedEnd >= new Date(range.start)
@@ -402,48 +410,32 @@ const _id=req.params.id;
   });
 
   if (isUnavailable) {
-    req.flash("error","Selected dates not available")
-    res.redirect(`/listing/${_id}/book`)
+    req.flash("error", "Selected dates are not available.");
+    return res.redirect(`/listing/${req.params.id}/book`);
   }
 
-  const bookings = new booking({
+  // ✅ Create and save booking
+  const newBooking = new booking({
     userId: req.user._id,
     listingId: listingData._id,
     checkIn: requestedStart,
     checkOut: requestedEnd
   });
 
-  await bookings.save();
-    if (!listingData.unavailableDates) {
-  listingData.unavailableDates = [];
-}
+  await newBooking.save();
 
- listingData.unavailableDates.push({ start: requestedStart, end: requestedEnd });
-await listingData.save();
-  res.redirect("/payment");
+  // ✅ Update unavailable dates
+  if (!listingData.unavailableDates) {
+    listingData.unavailableDates = [];
+  }
+
+  listingData.unavailableDates.push({ start: requestedStart, end: requestedEnd });
+  await listingData.save();
+
+  res.redirect('/payment');
 });
-app.get('/payment', isLoggedIn, async (req, res) => {
- 
-    const bookingData = await booking.findOne({ userId: req.user._id })
-      .populate('listingId');
-
-    if (!bookingData) {
-     req.flash("error","No Booking found");
-     res.render("/dashboard");
-    }
-
-    const listingData = bookingData.listingId;
-    const checkIn = bookingData.checkIn;
-    const checkOut = bookingData.checkOut;
-    const transactionId = 'TXN' + Math.floor(Math.random() * 1000000000); 
-    res.render('./listing/payment.ejs', {
-      listingData,
-      checkIn,
-      checkOut,
-      transactionId
-    });
   
-});
+
 app.listen(8080,()=> {
     console.log("connected to server ");
 });
