@@ -39,6 +39,9 @@
       <% }) %>
     </div>
   <% } else { %>
-    <div class="alert alert-info">No bookings for this listing yet.</div>
+  <div class="alert alert-danger alert-dismissible fade show text-center fw-bold" role="alert" >
+   No Bookings for this listing yet.
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
   <% } %>
 </section>

@@ -414,26 +414,29 @@ const _id=req.params.id;
   });
 
   await bookings.save();
-  listingData.unavailableDates.push({ start: requestedStart, end: requestedEnd });
-await listingData.save();
-  res.send(' proceed to payment'); 
+    if (!listingData.unavailableDates) {
+  listingData.unavailableDates = [];
+}
 
+ listingData.unavailableDates.push({ start: requestedStart, end: requestedEnd });
+await listingData.save();
+  res.redirect("/payment");
 });
 app.get('/payment', isLoggedIn, async (req, res) => {
  
     const bookingData = await booking.findOne({ userId: req.user._id })
       .populate('listingId');
 
-    if (!booking) {
+    if (!bookingData) {
      req.flash("error","No Booking found");
      res.render("/dashboard");
     }
 
     const listingData = bookingData.listingId;
-    const checkIn = booking.checkIn;
-    const checkOut = booking.checkOut;
+    const checkIn = bookingData.checkIn;
+    const checkOut = bookingData.checkOut;
     const transactionId = 'TXN' + Math.floor(Math.random() * 1000000000); 
-    res.render('payment/confirmation', {
+    res.render('./listing/payment.ejs', {
       listingData,
       checkIn,
       checkOut,
