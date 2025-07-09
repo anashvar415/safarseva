@@ -60,9 +60,11 @@
                   <%= booking.status %>
                 </span>
               </p>
+              <% if(booking.status!=='Confirmed') { %> 
              <form action="/bookings/<%= booking._id %>/cancel" method="POST">
                 <button class="btn btn-danger btn-sm">Cancel</button>
               </form>
+              <% } %>
               </div>
             </div>
           </div>
