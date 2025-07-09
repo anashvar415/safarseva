@@ -15,20 +15,20 @@ require('dotenv').config();
 }
 const helmet = require('helmet');
 
-
-
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
       defaultSrc: ["'self'"],
+      
       scriptSrc: [
         "'self'",
         "https://cdn.jsdelivr.net",
         "https://cdnjs.cloudflare.com",
         "https://api.mapbox.com",
         "'unsafe-inline'",
-         "'unsafe-eval'"
+        "'unsafe-eval'"
       ],
+      
       styleSrc: [
         "'self'",
         "https://cdn.jsdelivr.net",
@@ -37,12 +37,14 @@ app.use(
         "https://api.mapbox.com",
         "'unsafe-inline'"
       ],
+      
       fontSrc: [
         "'self'",
         "https://fonts.googleapis.com",
         "https://fonts.gstatic.com",
         "https://cdn.jsdelivr.net"
       ],
+      
       imgSrc: [
         "'self'",
         "data:",
@@ -50,14 +52,19 @@ app.use(
         "https://images.unsplash.com",
         "https://cdn.jsdelivr.net"
       ],
+      
       connectSrc: [
         "'self'",
         "https://api.mapbox.com",
         "https://events.mapbox.com"
       ],
+      
       objectSrc: ["'none'"],
-      upgradeInsecureRequests: [],
-    },
+     
+      workerSrc: ["'self'", "blob:"],
+      
+      upgradeInsecureRequests: []
+    }
   })
 );
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
