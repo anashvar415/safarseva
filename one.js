@@ -168,7 +168,7 @@ app.get('/dashboard',isLoggedIn, async (req, res) => {
 
 app.get('/listing/:id/bookings', isLoggedIn,async (req, res) => {
   const listingData = await listing.findById(req.params.id);
-  const bookings = await booking.find({ listingId: listingData._id }).populate('user');
+  const bookings = await booking.find({ listingId: listingData._id }).populate('userId');
   res.render('./listing/listingBooking', { listing:listingData, bookings });
 });
 app.post('/bookings/:id/confirm', async (req, res) => {
