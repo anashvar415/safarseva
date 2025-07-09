@@ -169,16 +169,16 @@ app.get('/dashboard',isLoggedIn, async (req, res) => {
 app.get('/listing/:id/bookings', isLoggedIn,async (req, res) => {
   const listingData = await listing.findById(req.params.id);
   const bookings = await booking.find({ listing: listingData._id }).populate('user');
-  res.render('./listing/listingBookings', { listing:listingData, bookings });
+  res.render('./listing/listingBooking', { listing:listingData, bookings });
 });
 app.post('/bookings/:id/confirm', async (req, res) => {
   await booking.findByIdAndUpdate(req.params.id, { status: 'Confirmed' });
-  res.redirect('back');
+  res.redirect('/dashboard');
 });
 
 app.post('/bookings/:id/cancel', async (req, res) => {
   await booking.findByIdAndUpdate(req.params.id, { status: 'Cancelled' });
-  res.redirect('back');
+  res.redirect('/dashboard');
 });
 
 
@@ -419,7 +419,28 @@ await listingData.save();
   res.send(' proceed to payment'); 
 
 });
+app.get('/payment', isLoggedIn, async (req, res) => {
+ 
+    const bookingData = await booking.findOne({ userId: req.user._id })
+      .populate('listingId');
 
+    if (!booking) {
+     req.flash("error","No Booking found");
+     res.render("/dashboard");
+    }
+
+    const listingData = bookingData.listingId;
+    const checkIn = booking.checkIn;
+    const checkOut = booking.checkOut;
+    const transactionId = 'TXN' + Math.floor(Math.random() * 1000000000); 
+    res.render('payment/confirmation', {
+      listingData,
+      checkIn,
+      checkOut,
+      transactionId
+    });
+  
+});
 app.listen(8080,()=> {
     console.log("connected to server ");
 });
