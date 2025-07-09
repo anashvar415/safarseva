@@ -50,10 +50,10 @@
         <div class="col">
           <div class="card h-100 shadow-sm">
             <div class="card-body">
-              <h5 class="card-title"><%= booking.listingTitle %></h5>
+              <h5 class="card-title"><%= booking.listingId.title%></h5>
               <p class="card-text">
-                <strong>From:</strong> <%= booking.startDate %><br>
-                <strong>To:</strong> <%= booking.endDate %><br>
+                <strong>From:</strong> <%= booking.checkIn %><br>
+                <strong>To:</strong> <%= booking.checkOut %><br>
                 <strong>Status:</strong> 
                 <span class="badge 
                   <%= booking.status === 'Confirmed' ? 'bg-success' : booking.status === 'Cancelled' ? 'bg-danger' : 'bg-warning text-dark' %>">
@@ -64,9 +64,9 @@
               </div>
             </div>
           </div>
-        </div>
+         </div>
       <% }) %>
-    </div>
+  
   <% } else { %>
     <div class="alert alert-info">You haven't made any bookings yet.</div>
   <% } %>
