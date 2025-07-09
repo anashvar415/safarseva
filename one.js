@@ -149,7 +149,7 @@ app.get('/', (req, res) => {
 
 app.get('/dashboard',isLoggedIn, async (req, res) => {
   const current = await user.findById(req.user._id)
-    const listings = await listing.find({ owner: current._d }).populate('reviews');
+    const listings = await listing.find({ owner: current._id }).populate('reviews');
 
     const bookings = await booking.find({ userId: current._id  }).populate({
       path: 'listingId',
