@@ -13,10 +13,10 @@
     <div class="list-group">
       <% bookings.forEach(booking => { %>
         <div class="list-group-item">
-          <h5 class="mb-1">Booked by: <%= booking.user.username %></h5>
+          <h5 class="mb-1">Booked by: <%= booking.userId.username %></h5>
           <p class="mb-1">
-            From: <%= booking.statDate.toDateString() %> <br>
-            To: <%= booking.endDate.toDateString() %> <br>
+            From: <%= booking.checkIn.toDateString() %> <br>
+            To: <%= booking.checkOut.toDateString() %> <br>
             Status: 
             <span class="badge 
               <%= booking.status === 'Confirmed' ? 'bg-success' : booking.status === 'Cancelled' ? 'bg-danger' : 'bg-warning text-dark' %>">
