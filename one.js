@@ -434,6 +434,29 @@ app.post('/listing/:id/book', isLoggedIn, async (req, res) => {
 
   res.redirect('/payment');
 });
+app.get('/payment', isLoggedIn, async (req, res) => {
+  const bookingData = await booking.findOne({ userId: req.user._id })
+    
+    .populate('listingId');
+
+  if (!bookingData) {
+    req.flash("error", "No booking found");
+    return res.redirect("/dashboard");
+  }
+
+  const listingData = bookingData.listingId;
+  const checkIn = bookingData.checkIn;
+  const checkOut = bookingData.checkOut;
+  const transactionId = 'TXN' + Math.floor(Math.random() * 1000000000);
+
+  res.render('./listing/payment.ejs', {
+    listingData,
+    checkIn,
+    checkOut,
+    transactionId
+  });
+});
+
   
 
 app.listen(8080,()=> {
