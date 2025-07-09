@@ -29,7 +29,7 @@
                 <% if(currentUser && currentUser._id.equals(listingData.owner._id)) { %>
                  
                 <form method="POST" action="/listing/<%= listingData._id %>?_method=DELETE" class="d-inline" >
-                  <button class="btn btn-outline-danger btn-sm">Delete</button>
+                  <button class="btn btn-outline-danger btn-sm ms-2">Delete</button>
                 </form>
                 <a href="/listing/<%= listingData._id %>/edit" class="btn btn-outline-primary btn-sm ms-2">Edit</a>
               <% } %></div>
