@@ -156,14 +156,11 @@ app.get('/dashboard',isLoggedIn, async (req, res) => {
       populate: { path: 'owner' }
     });
 
-   
-    const reviews = await review.find({ author: current._id });
 
     res.render('./users/user.ejs', {
       user:current,
       listings,
-      bookings,
-      reviews });
+      bookings });
 });
 
 app.get('/listing/:id/bookings', isLoggedIn,async (req, res) => {
