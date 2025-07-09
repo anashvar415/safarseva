@@ -411,7 +411,6 @@ app.post('/listing/:id/book', isLoggedIn, async (req, res) => {
     return res.redirect(`/listing/${req.params.id}/book`);
   }
 
-  // ✅ Create and save booking
   const newBooking = new booking({
     userId: req.user._id,
     listingId: listingData._id,
@@ -421,7 +420,6 @@ app.post('/listing/:id/book', isLoggedIn, async (req, res) => {
 
   await newBooking.save();
 
-  // ✅ Update unavailable dates
   if (!listingData.unavailableDates) {
     listingData.unavailableDates = [];
   }
@@ -433,7 +431,7 @@ app.post('/listing/:id/book', isLoggedIn, async (req, res) => {
 });
 app.get('/payment', isLoggedIn, async (req, res) => {
   const bookingData = await booking.findOne({ userId: req.user._id })
-    
+    .sort({createdAt:-1})
     .populate('listingId');
 
   if (!bookingData) {
