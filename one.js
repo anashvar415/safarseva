@@ -181,7 +181,7 @@ app.get('/listing/:id/bookings', isLoggedIn,async (req, res) => {
   res.render('./listing/listingBooking', { listing:listingData, bookings });
 });
 app.post('/bookings/:id/confirm', async (req, res, next) => {
-  try {
+  
     const updated = await booking.findByIdAndUpdate(req.params.id, { status: 'Confirmed' }, { new: true }).populate('listingId');
 
     req.bookingDetails = {
@@ -193,14 +193,11 @@ app.post('/bookings/:id/confirm', async (req, res, next) => {
     };
 
     next(); 
-  } catch (err) {
-    next(err);
-  }
-}, sendMailtoUser, (req, res) => {
+  }, sendMailtoUser, (req, res) => {
   res.redirect("/dashboard");
 });
 app.post('/bookings/:id/cancel', async (req, res, next) => {
-  try {
+ 
     const updated = await booking.findByIdAndUpdate(req.params.id, { status: 'Cancelled' }, { new: true }).populate('listingId');
 
     req.bookingDetails = {
@@ -211,10 +208,7 @@ app.post('/bookings/:id/cancel', async (req, res, next) => {
       status: updated.status
     };
 
-    next(); // ✅ Now safely proceeds to sendMailtoUser
-  } catch (err) {
-    next(err);
-  }
+    next(); 
 }, sendMailtoUser, (req, res) => {
   res.redirect("/dashboard");
 });
