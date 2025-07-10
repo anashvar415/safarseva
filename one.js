@@ -10,7 +10,8 @@ const ejsmate = require("ejs-mate")
 const passport = require('passport');
 const user = require('./models/user.js');
 const LocalStrategy = require('passport-local');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const { sendMailtoUser} = require('./middleware');
+
 
 if(process.env.NODE_ENV !== "production") {
 require('dotenv').config();
@@ -182,17 +183,33 @@ app.get('/listing/:id/bookings', isLoggedIn,async (req, res) => {
 app.post('/bookings/:id/confirm', async (req, res) => {
   
   await booking.findByIdAndUpdate(req.params.id, { status: 'Confirmed' });
-  res.redirect('/dashboard');
+  const bookingData= await booking.findById(req.params.id);
+    req.bookingDetails = {
+      email: req.user.email,
+      hotelName: bookingData.listingId.name,
+      checkIn: bookingData.checkIn,
+      checkOut: bookingData.checkOut,
+      status: bookingData.status
+    };
+  next();
+},sendMailtoUser,async (req,res)=>{
+  res.redirect("/dashboard")
 });
-
 app.post('/bookings/:id/cancel', async (req, res) => {
+  
   await booking.findByIdAndUpdate(req.params.id, { status: 'Cancelled' });
-  res.redirect('/dashboard');
+  const bookingData= await booking.findById(req.params.id);
+    req.bookingDetails = {
+      email: req.user.email,
+      hotelName: bookingData.listingId.name,
+      checkIn: bookingData.checkIn,
+      checkOut: bookingData.checkOut,
+      status: bookingData.status
+    };
+  next();
+},sendMailtoUser,async (req,res)=>{
+  res.redirect("/dashboard")
 });
-
-
-
-
 
 app.get('/signup', (req, res) => {
     res.render('./users/signup.ejs');});
@@ -448,11 +465,27 @@ app.get('/payment', isLoggedIn, async (req, res) => {
     return res.redirect("/dashboard");
   }
 bookingData.status='Confirmed';
-  const listingData = bookingData.listingId;
-  const checkIn = bookingData.checkIn;
-  const checkOut = bookingData.checkOut;
-  const transactionId = 'TXN' + Math.floor(Math.random() * 1000000000);
+ 
+    await bookingData.save();
 
+    req.bookingDetails = {
+      email: req.user.email,
+      hotelName: bookingData.listingId.name,
+      checkIn: bookingData.checkIn,
+      checkOut: bookingData.checkOut,
+      status: bookingData.status
+    };
+
+    res.locals.data = {
+      listingData: bookingData.listingId,
+      checkIn: bookingData.checkIn,
+      checkOut: bookingData.checkOut,
+      transactionId: 'TXN' + Math.floor(Math.random() * 1000000000)
+    };
+
+    next(); }
+    , sendMailtoUser, (req, res) => {
+  const { listingData, checkIn, checkOut, transactionId } = res.locals.data;
   res.render('./listing/payment.ejs', {
     listingData,
     checkIn,
