@@ -180,35 +180,43 @@ app.get('/listing/:id/bookings', isLoggedIn,async (req, res) => {
   const bookings = await booking.find({ listingId: listingData._id }).populate('userId');
   res.render('./listing/listingBooking', { listing:listingData, bookings });
 });
-app.post('/bookings/:id/confirm', async (req, res) => {
-  
-  await booking.findByIdAndUpdate(req.params.id, { status: 'Confirmed' });
-  const bookingData= await booking.findById(req.params.id);
+app.post('/bookings/:id/confirm', async (req, res, next) => {
+  try {
+    const updated = await booking.findByIdAndUpdate(req.params.id, { status: 'Confirmed' }, { new: true }).populate('listingId');
+
     req.bookingDetails = {
       email: req.user.email,
-      hotelName: bookingData.listingId.name,
-      checkIn: bookingData.checkIn,
-      checkOut: bookingData.checkOut,
-      status: bookingData.status
+      hotelName: updated.listingId.name,
+      checkIn: updated.checkIn,
+      checkOut: updated.checkOut,
+      status: updated.status
     };
-  next();
-},sendMailtoUser,async (req,res)=>{
-  res.redirect("/dashboard")
+
+    next(); 
+  } catch (err) {
+    next(err);
+  }
+}, sendMailtoUser, (req, res) => {
+  res.redirect("/dashboard");
 });
-app.post('/bookings/:id/cancel', async (req, res) => {
-  
-  await booking.findByIdAndUpdate(req.params.id, { status: 'Cancelled' });
-  const bookingData= await booking.findById(req.params.id);
+app.post('/bookings/:id/cancel', async (req, res, next) => {
+  try {
+    const updated = await booking.findByIdAndUpdate(req.params.id, { status: 'Cancelled' }, { new: true }).populate('listingId');
+
     req.bookingDetails = {
       email: req.user.email,
-      hotelName: bookingData.listingId.name,
-      checkIn: bookingData.checkIn,
-      checkOut: bookingData.checkOut,
-      status: bookingData.status
+      hotelName: updated.listingId.name,
+      checkIn: updated.checkIn,
+      checkOut: updated.checkOut,
+      status: updated.status
     };
-  next();
-},sendMailtoUser,async (req,res)=>{
-  res.redirect("/dashboard")
+
+    next(); // ✅ Now safely proceeds to sendMailtoUser
+  } catch (err) {
+    next(err);
+  }
+}, sendMailtoUser, (req, res) => {
+  res.redirect("/dashboard");
 });
 
 app.get('/signup', (req, res) => {
