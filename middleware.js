@@ -22,20 +22,20 @@ const transporter = nodemailer.createTransport({
 });
 
 module.exports.sendMailtoUser = async (req, res, next) => {
-  const { status, email, hotelName, checkIn, checkOut } = req.bookingDetails;
+  const { status, email, title, checkIn, checkOut } = req.bookingDetails;
 
   let subject = '', html = '';
 
   if (status === 'Confirmed') {
     subject = '✅ Booking Confirmed';
     html = `
-      <h2>Your booking at ${hotelName} is confirmed</h2>
+      <h2>Your booking at ${title} is confirmed</h2>
       <p><strong>Check-in:</strong> ${checkIn}</p>
       <p><strong>Check-out:</strong> ${checkOut}</p>
     `;
   } else if (status === 'Cancelled') {
     subject = '❌ Booking Cancelled';
-    html = `<h2>Your booking at ${hotelName} has been cancelled.</h2>`;
+    html = `<h2>Your booking at ${title} has been cancelled.</h2>`;
   } else {
     return next();
   }

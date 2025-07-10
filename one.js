@@ -459,21 +459,24 @@ app.post('/listing/:id/book', isLoggedIn, async (req, res) => {
   res.redirect('/payment');
 });
 app.get('/payment', isLoggedIn, async (req, res,next) => {
-  const bookingData = await booking.findOne({ userId: req.user._id })
-    .sort({createdAt:-1})
-    .populate('listingId');
+  const allBooking = await booking.find({ userId: req.user._id })
+  .sort({ createdAt: -1 })
+  .limit(1)
+  .populate('listingId');
+
+const bookingData= allBooking[0];
 
   if (!bookingData) {
     req.flash("error", "No booking found");
     return res.redirect("/dashboard");
   }
-bookingData.status='Confirmed';
- 
+bookingData.set('status', 'Confirmed');
+
     await bookingData.save();
 
     req.bookingDetails = {
       email: req.user.email,
-      hotelName: bookingData.listingId.name,
+      title: bookingData.listingId.title,
       checkIn: bookingData.checkIn,
       checkOut: bookingData.checkOut,
       status: bookingData.status
@@ -524,6 +527,7 @@ bookingData.status='Confirmed';
           pass: process.env.PASSWORD , 
         }
       });
+      console.log(email);
       if(!email) {
         req.flash("error", "Email not registered.");
         return res.redirect("/forget");
@@ -554,7 +558,7 @@ bookingData.status='Confirmed';
    
   if(users!=null){req.session.username = users.username;
   
-    res.render('reset',{ username: users.username })
+    res.render('./users/reset.ejs',{ username: users.username })
    
   }
   else 
