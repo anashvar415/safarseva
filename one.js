@@ -502,9 +502,9 @@ bookingData.status='Confirmed';
     res.render('./users/forget.ejs'); 
     })
     app.post("/forget", async (req, res) => {
-    const { email } = req.body;
+    
   
-    try {
+    try {const { email } = req.body;
       const users = await user.findOne({ email });
       if (!users) {
         req.flash("error", "Email not registered.");
@@ -526,7 +526,7 @@ bookingData.status='Confirmed';
       });
   
       const mailOptions = {
-        to: user.email,
+        to: email,
         from: `"Safarseva Team"${process.env.EMAIL}`
   ,
         subject: "Password Reset Code",
@@ -577,8 +577,8 @@ bookingData.status='Confirmed';
         res.redirect('/forget')
       }
   
-      await user.setPassword(Repassword); 
-      await user.save(); 
+      await users.setPassword(Repassword); 
+      await users.save(); 
       
   
       
