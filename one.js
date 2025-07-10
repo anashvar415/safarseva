@@ -524,6 +524,10 @@ bookingData.status='Confirmed';
           pass: process.env.PASSWORD , 
         }
       });
+      if(!email) {
+        req.flash("error", "Email not registered.");
+        return res.redirect("/forget");
+      }
   
       const mailOptions = {
         to: email,

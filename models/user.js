@@ -14,4 +14,4 @@ CodeExpires: Number
 });
 
 userSchema.plugin(passportLocalMongoose);
-module.exports = mongoose.model('user', userSchema);;
+module.exports = mongoose.model('user', userSchema);
