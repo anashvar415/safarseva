@@ -400,7 +400,6 @@ app.post('/listing/:id/book', isLoggedIn, async (req, res) => {
   const { checkIn, checkOut } = req.body;
   const listingData = await listing.findById(req.params.id);
 
-  // ✅ Validate input
   if (!checkIn || !checkOut) {
     req.flash("error", "Please select valid check-in and check-out dates.");
     return res.redirect(`/listing/${req.params.id}/book`);
@@ -409,7 +408,6 @@ app.post('/listing/:id/book', isLoggedIn, async (req, res) => {
   const requestedStart = new Date(checkIn);
   const requestedEnd = new Date(checkOut);
 
-  // ✅ Check for date conflicts
   const isUnavailable = (listingData.unavailableDates || []).some(range => {
     return (
       requestedStart <= new Date(range.end) &&
@@ -449,7 +447,7 @@ app.get('/payment', isLoggedIn, async (req, res) => {
     req.flash("error", "No booking found");
     return res.redirect("/dashboard");
   }
-
+bookingData.status='Confirmed';
   const listingData = bookingData.listingId;
   const checkIn = bookingData.checkIn;
   const checkOut = bookingData.checkOut;
