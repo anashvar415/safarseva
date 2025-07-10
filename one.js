@@ -457,7 +457,7 @@ app.post('/listing/:id/book', isLoggedIn, async (req, res) => {
 
   res.redirect('/payment');
 });
-app.get('/payment', isLoggedIn, async (req, res) => {
+app.get('/payment', isLoggedIn, async (req, res,next) => {
   const bookingData = await booking.findOne({ userId: req.user._id })
     .sort({createdAt:-1})
     .populate('listingId');
