@@ -10,6 +10,8 @@ const ejsmate = require("ejs-mate")
 const passport = require('passport');
 const user = require('./models/user.js');
 const LocalStrategy = require('passport-local');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+
 if(process.env.NODE_ENV !== "production") {
 require('dotenv').config();
 }
@@ -99,6 +101,8 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
+
+const nodemailer = require("nodemailer");
 
 
 sessionOptions = {
@@ -459,6 +463,98 @@ app.get('/payment', isLoggedIn, async (req, res) => {
   });
 });
 
+  app.get('/forget', (req,res)=>{
+    
+    res.render('./users/forget.ejs'); 
+    })
+    app.post("/forget", async (req, res) => {
+    const { email } = req.body;
+  
+    try {
+      const users = await user.findOne({ email });
+      if (!users) {
+        req.flash("error", "Email not registered.");
+        return res.redirect("/forget");
+      }
+  
+     
+      const code = Math.floor(100000 + Math.random() * 900000).toString();
+      users.Code = code;
+      users.CodeExpires = Date.now() + 10 * 60 * 1000; 
+      await users.save();
+    
+      const transporter = nodemailer.createTransport({
+        service: "Gmail",
+        auth: {
+          user: process.env.EMAIL,
+          pass: process.env.PASSWORD , 
+        }
+      });
+  
+      const mailOptions = {
+        to: user.email,
+        from: `"Safarseva Team"${process.env.EMAIL}`
+  ,
+        subject: "Password Reset Code",
+        text: `Your password reset code is: ${code}. It expires in 10 minutes.`
+      };
+  
+      await transporter.sendMail(mailOptions);
+      
+      req.flash("success", "Reset code sent to your email.");
+      res.redirect('/forget'); 
+    } catch (err) {
+      console.error(err);
+      req.flash("error", "Error sending reset code.");
+      res.redirect("/forget");
+    }
+  });
+  app.post('/verify',async (req,res)=>{
+  const code = req.body['verification'];
+  const users = await user.findOne({ Code:code });
+  console.log(users);
+   
+  if(users!=null){req.session.username = users.username;
+  
+    res.render('reset',{ username: users.username })
+   
+  }
+  else 
+  {
+    req.flash('error','Invalid code');
+    res.redirect('/forget')
+  }
+  
+  })
+  app.post('/reset', async (req, res) => {
+    const { Repassword } = req.body;
+    const username = req.session.username;
+    
+  
+    if (!username) {
+      return res.redirect('/login');
+    }
+  
+    try {
+      const users = await user.findOne({ username });
+  
+      if (!users) {
+        req.flash("error","user not exist");
+        res.redirect('/forget')
+      }
+  
+      await user.setPassword(Repassword); 
+      await user.save(); 
+      
+  
+      
+      req.flash('success', 'Password reset successful. Please log in.');
+      res.redirect('/login');
+    } catch (err) {
+      req.flash("error","error occured");
+      res.redirect("/forget")
+    }
+  });
   
 
 app.listen(8080,()=> {
