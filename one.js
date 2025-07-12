@@ -324,19 +324,36 @@ app.get('/listing', async (req, res) => {
    
     res.render('./listing/new.ejs');
 });
-  
-   
+app.post('/listing/:id/reviews', isLoggedIn, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const listingData = await listing.findById(id);
 
-   app.post('/listing/:id/reviews',isLoggedIn, async (req, res) => {
-    let {id}= req.params;
-    const listingData = await listing.findById(id);
-    const newReview = new review(req.body.review);
-    const reviewAuthor = req.user._id;
-    newReview.author = reviewAuthor;
-    listingData.reviews.push(newReview);
-    await newReview.save();
-    await listingData.save();
-    res.redirect(`/listing/${id}`);
+        if (!listingData) {
+            req.flash("error", "Listing not found.");
+            return res.redirect("/listing");
+        }
+
+        if (!req.body.review || !req.body.review.rating || !req.body.review.comment) {
+            req.flash("error", "Incomplete review data.");
+            return res.redirect(`/listing/${id}`);
+        }
+
+        const newReview = new review(req.body.review);
+        newReview.author = req.user._id;
+
+        listingData.reviews.push(newReview);
+
+        await newReview.save();
+        await listingData.save();
+
+        req.flash("success", "Review added successfully!");
+        res.redirect(`/listing/${id}`);
+    } catch (err) {
+        console.error("Review creation error:", err);
+        req.flash("error", "Failed to post the review.");
+        res.redirect("/listing");
+    }
 });
 app.post('/listing/:id/reviews/:reviewId', isLoggedIn,async(req, res) => {
     let {id, reviewId} = req.params;
@@ -446,14 +463,15 @@ app.delete("/listing/:id", isLoggedIn,async (req, res) => {
         let {id}= req.params;
         
     const foundListing = await listing.findById(id);
-    
-   
-        await review.deleteMany({ _id: { $in: foundListing.reviews } });
-    
-          
-        
-     await   listing.findByIdAndDelete(id);
-         res.redirect('/listing');
+     if (!foundListing) {
+            req.flash("error", "Listing not found.");
+            return res.redirect("/listing");
+        }
+
+     await review.deleteMany({ _id: { $in: foundListing.reviews || [] } });
+        await foundListing.findByIdAndDelete(id);
+        res.redirect("/listing");
+
 });
 app.get('/listing/:id/book', async (req, res) => {
     const listingData = await listing.findById(req.params.id);
