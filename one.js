@@ -217,7 +217,7 @@ app.post('/bookings/:id/confirm', async (req, res, next) => {
     const updated = await booking.findByIdAndUpdate(req.params.id, { status: 'Confirmed' }, { new: true }).populate('listingId');
 
     req.bookingDetails = {
-      email: req.user.email,
+      userEmail: req.user.email,
       hotelName: updated.listingId.name,
       checkIn: updated.checkIn,
       checkOut: updated.checkOut,
@@ -233,7 +233,7 @@ app.post('/bookings/:id/cancel', async (req, res, next) => {
     const updated = await booking.findByIdAndUpdate(req.params.id, { status: 'Cancelled' }, { new: true }).populate('listingId');
 
     req.bookingDetails = {
-      email: req.user.email,
+      userEmail: req.user.email,
       hotelName: updated.listingId.name,
       checkIn: updated.checkIn,
       checkOut: updated.checkOut,
