@@ -43,11 +43,7 @@ let mailOptions;
   }
 
 
-  try {
     await transporter.sendMail(mailOptions);
     next();
-  } catch (err) {
-     req.flash("error "," Mail not sent.");
-     res.redirect("/payment");
-  }
+ 
 };
