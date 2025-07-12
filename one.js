@@ -428,7 +428,7 @@ app.get('/logout', isLoggedIn, (req, res) => {
         res.redirect('/listing');
     })});
 
-app.post('/listing/:id/unavailable', async (req, res) => {
+app.post('/listing/:id/unavailable',isLoggedIn, async (req, res) => {
   const { start, end } = req.body;
   const listingData = await listing.findById(req.params.id);
 
@@ -474,7 +474,7 @@ app.delete("/listing/:id", isLoggedIn,async (req, res) => {
         res.redirect("/listing");
 
 });
-app.get('/listing/:id/book', async (req, res) => {
+app.get('/listing/:id/book', isLoggedIn,async (req, res) => {
     const listingData = await listing.findById(req.params.id);
     res.render("./listing/book.ejs",{listingData})
 
@@ -523,7 +523,7 @@ app.post('/listing/:id/book',  async (req, res) => {
 
   res.redirect('/payment');
 });
-app.get('/payment', async (req, res,next) => {
+app.get('/payment', isLoggedIn,async (req, res,next) => {
   const allBooking = await booking.find({ userId: req.user._id })
   .sort({ createdAt: -1 })
   .limit(1)
