@@ -15,8 +15,7 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 if(process.env.NODE_ENV !== "production") {
 require('dotenv').config();
-}
-const helmet = require('helmet');
+}const helmet = require('helmet');
 
 app.use(
   helmet.contentSecurityPolicy({
@@ -28,8 +27,8 @@ app.use(
         "https://cdn.jsdelivr.net",
         "https://cdnjs.cloudflare.com",
         "https://api.mapbox.com",
-        "'unsafe-inline'",
-        "'unsafe-eval'"
+        "'unsafe-inline'"
+        // Avoid 'unsafe-eval' unless absolutely necessary
       ],
       
       styleSrc: [
@@ -46,17 +45,17 @@ app.use(
         "https://fonts.googleapis.com",
         "https://fonts.gstatic.com",
         "https://cdn.jsdelivr.net",
-         "https://cdnjs.cloudflare.com"
+        "https://cdnjs.cloudflare.com"
       ],
       
       imgSrc: [
         "'self'",
         "data:",
+        "blob:",
         "https://res.cloudinary.com",
         "https://images.unsplash.com",
-        "https://cdn.jsdelivr.net",
-        "https://source.unsplash.com"
-
+        "https://source.unsplash.com",
+        "https://cdn.jsdelivr.net"
       ],
       
       connectSrc: [
@@ -65,12 +64,14 @@ app.use(
         "https://events.mapbox.com"
       ],
       
-      objectSrc: ["'none'"],
-     
-      workerSrc: ["'self'", "blob:"],
+      workerSrc: [
+        "'self'",
+        "blob:"
+      ],
       
-      upgradeInsecureRequests: []
-    }
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: [],
+    },
   })
 );
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
