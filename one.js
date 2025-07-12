@@ -54,7 +54,9 @@ app.use(
         "data:",
         "https://res.cloudinary.com",
         "https://images.unsplash.com",
-        "https://cdn.jsdelivr.net"
+        "https://cdn.jsdelivr.net",
+        "https://source.unsplash.com"
+
       ],
       
       connectSrc: [
