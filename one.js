@@ -517,7 +517,7 @@ const bookingData= allBooking[0];
     return res.redirect("/dashboard");
   }
 
-
+bookingData.status="Confirmed";
     await bookingData.save();
 
     req.bookingDetails = {

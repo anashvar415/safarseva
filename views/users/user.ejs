@@ -11,7 +11,7 @@
 <section class="container my-5">
   <div class="card shadow-sm">
     <div class="card-body">
-      <h3 class="card-title mb-3">👤 User Profile</h3>
+      <h3 class="card-title mb-3"> 👤User Profile</h3>
       <p class="mb-1"><strong>Username:</strong> <%= user.username %></p>
       <p class="mb-1"><strong>Email:</strong> <%= user.email %></p>
       
@@ -32,7 +32,38 @@
               <p class="card-text text-muted"><i class="bi bi-geo-alt-fill"></i> <%= listing.location %></p>
               <a href="/listing/<%= listing._id %>/edit" class="btn btn-outline-primary btn-sm">Edit</a>
             <a href="/listing/<%= listing._id %>/bookings" class="btn btn-outline-secondary btn-sm">View Bookings</a>
-      </div>
+    
+    <h5 class="mb-1">Set Unavailable Dates</h5>
+  <form action="/listing/<%= listing._id %>/unavailable" method="POST" class="p-4 border rounded shadow-sm bg-light">
+    <div class="mb-3">
+      <label for="start" class="form-label">Start:</label>
+      <input type="text" id="start" name="start" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label for="end" class="form-label">End:</label>
+      <input type="text" id="end" name="end" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Confirm dates</button>
+  </form>  
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+  const end= flatpickr("#end", {
+    dateFormat: "Y-m-d",
+    minDate: "today"
+  });
+  const start = flatpickr("#start", {
+    dateFormat: "Y-m-d",
+    minDate: "today",
+    onChange: function(selectedDates, dateStr, instance) {
+      if (selectedDates.length > 0) {
+        end.set("minDate", dateStr);
+      }
+    }
+  });
+
+</script>
+
+</div>
  </div>
           </div>
         </div>
@@ -65,7 +96,7 @@
                   <%= booking.status %>
                 </span>
               </p>
-              <% if(booking.status!=='Confirmed') { %> 
+              <% if(booking.status=='Confirmed') { %> 
              <form action="/bookings/<%= booking._id %>/cancel" method="POST">
                 <button class="btn btn-danger btn-sm">Cancel</button>
               </form>
