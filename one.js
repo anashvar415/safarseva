@@ -225,7 +225,7 @@ app.post('/bookings/:id/confirm', async (req, res, next) => {
 
     next(); 
   }, sendMailtoUser, (req, res) => {
-  res.redirect("/dashboard");
+  res.redirect("/explore");
 });
 app.post('/bookings/:id/cancel', async (req, res, next) => {
  
@@ -241,7 +241,7 @@ app.post('/bookings/:id/cancel', async (req, res, next) => {
 
     next(); 
 }, sendMailtoUser, (req, res) => {
-  res.redirect("/dashboard");
+  res.redirect("/explore");
 });
 
 app.get('/signup', (req, res) => {
