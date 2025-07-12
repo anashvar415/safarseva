@@ -2,7 +2,7 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const listing = require('../models/listing.js');
 const indata = require('./data.js');
-
+console.log('Mongo URI:');
 async function main() {
     await mongoose.connect(process.env.ATLAS_URL);
     console.log("connected to Atlas DB");
