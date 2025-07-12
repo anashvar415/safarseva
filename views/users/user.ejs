@@ -44,13 +44,18 @@
 </section>
 <section class="container my-5">
   <h2 class="mb-4">📅 Your Bookings</h2>
+ 
+
   <% if (bookings.length > 0) { %>
     <div class="row row-cols-1 row-cols-md-2 g-4">
       <% bookings.forEach(booking => { %>
         <div class="col">
           <div class="card h-100 shadow-sm">
             <div class="card-body">
-              <h5 class="card-title"><%= booking.listingId.title%></h5>
+              <h5 class="card-title">
+  <%= booking.listingId ? booking.listingId.title : "Listing unavailable" %>
+</h5>
+
               <p class="card-text">
                 <strong>From:</strong> <%= booking.checkIn %><br>
                 <strong>To:</strong> <%= booking.checkOut %><br>
