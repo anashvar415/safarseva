@@ -13,12 +13,11 @@ const LocalStrategy = require('passport-local');
 const { sendMailtoUser} = require('./middleware');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
-
 if(process.env.NODE_ENV !== "production") {
 require('dotenv').config();
 }
 const helmet = require('helmet');
-
+;
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
@@ -133,8 +132,8 @@ passport.deserializeUser(user.deserializeUser());
 
 const dbUrl=  process.env.ATLAS_URL;
 passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    clientID: process.env.GOOGLE_ID,
+    clientSecret: process.env.GOOGLE_SECRET,
     callbackURL: "/auth/google/callback"
   },
   async function (accessToken, refreshToken, profile, done) {

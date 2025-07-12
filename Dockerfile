@@ -1,6 +1,6 @@
 # filepath: c:\Users\1807a\OneDrive\Desktop\c\safarseva\Dockerfile
 FROM node:18
-WORKDIR /app
+WORKDIR /one
 COPY package*.json ./
 RUN npm install --legacy-peer-deps
 COPY . .
