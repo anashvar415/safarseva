@@ -17,7 +17,7 @@ if(process.env.NODE_ENV !== "production") {
 require('dotenv').config();
 }
 const helmet = require('helmet');
-;
+
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
@@ -355,7 +355,7 @@ app.post('/listing/:id/reviews', isLoggedIn, async (req, res) => {
         res.redirect("/listing");
     }
 });
-app.post('/listing/:id/reviews/:reviewId', isLoggedIn,async(req, res) => {
+app.delete('/listing/:id/reviews/:reviewId', isLoggedIn,async(req, res) => {
     let {id, reviewId} = req.params;
     
        const reviews= await reviewList.findById(reviewId);

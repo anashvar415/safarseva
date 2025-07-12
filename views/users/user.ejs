@@ -58,23 +58,23 @@
     </div>
   </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
- 
-  const start = flatpickr("#start-<%= listing._id %>", {
+  const start<%= listing._id %> = flatpickr("#start-<%= listing._id %>", {
     dateFormat: "Y-m-d",
     minDate: "today",
     onChange: function(selectedDates, dateStr, instance) {
       if (selectedDates.length > 0) {
-        end.set("minDate", dateStr);
+        end_<%= listing._id %>.set("minDate", dateStr);
       }
     }
-  }); const end= flatpickr("#end-<%= listing._id %>", {
+  });
+
+  const end_<%= listing._id %> = flatpickr("#end-<%= listing._id %>", {
     dateFormat: "Y-m-d",
     minDate: "today"
   });
-
 </script>
+
 </div>
  </div>
           </div>
