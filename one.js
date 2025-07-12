@@ -505,7 +505,7 @@ bookingData.set('status', 'Confirmed');
     await bookingData.save();
 
     req.bookingDetails = {
-      email: req.user.email,
+      userEmail: bookingData.userId.email,
       title: bookingData.listingId.title,
       checkIn: bookingData.checkIn,
       checkOut: bookingData.checkOut,

@@ -14,39 +14,36 @@ module.exports.saveReturnTo = (req, res, next) => {
 }
 const nodemailer = require("nodemailer");
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  service: 'Gmail',
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
+    user: process.env.EMAIL,
+    pass: process.env.PASSWORD
   }
 });
 
 module.exports.sendMailtoUser = async (req, res, next) => {
-  const { status, email, title, checkIn, checkOut } = req.bookingDetails;
-
-  let subject = '', html = '';
-
+  const { status, userEmail, title, checkIn, checkOut } = req.bookingDetails;
+let mailOptions;
   if (status === 'Confirmed') {
-    subject = '✅ Booking Confirmed';
-    html = `
+   mailOptions={to: userEmail,
+        from: `"Safarseva Team"${process.env.EMAIL}` ,subject :'✅ Booking Confirmed',
+    html : `
       <h2>Your booking at ${title} is confirmed</h2>
       <p><strong>Check-in:</strong> ${checkIn}</p>
       <p><strong>Check-out:</strong> ${checkOut}</p>
-    `;
+    `}
   } else if (status === 'Cancelled') {
-    subject = '❌ Booking Cancelled';
-    html = `<h2>Your booking at ${title} has been cancelled.</h2>`;
-  } else {
+     mailOptions={to: userEmail,
+        from: `"Safarseva Team"${process.env.EMAIL}`,
+    subject : '❌ Booking Cancelled',
+    html :`<h2>Your booking at ${title} has been cancelled.</h2>`
+  }} else {
     return next();
   }
 
+  
   try {
-    await transporter.sendMail({
-      from: '"Safar Seva" <no-reply@safarseva.com>',
-      to: email,
-      subject,
-      html
-    });
+    await transporter.sendMail(mailOptions);
     next();
   } catch (err) {
      req.flash("error "," Mail not sent.");
