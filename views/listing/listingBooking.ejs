@@ -23,15 +23,19 @@
               <%= booking.status %>
             </span>
           </p>
-           <div class="col-md-5">
-      <label for="start" class="form-label">Start Date</label>
-      <input type="date" name="start" class="form-control" required>
+           <h5 class="mb-1">Set Unavailable Dates</h5>
+  <form action="/listing/<%= listingData._id %>/unavailable" method="POST" class="p-4 border rounded shadow-sm bg-light">
+    <div class="mb-3">
+      <label for="start" class="form-label">Start:</label>
+      <input type="text" id="start" name="start" class="form-control" required>
     </div>
-    <div class="col-md-5">
-      <label for="end" class="form-label">End Date</label>
-      <input type="date" name="end" class="form-control" required>
+    <div class="mb-3">
+      <label for="end" class="form-label">End:</label>
+      <input type="text" id="end" name="end" class="form-control" required>
     </div>
-
+    <button type="submit" class="btn btn-primary">Confirm dates</button>
+  </form>
+</div>
           <div class="d-flex gap-2">
             <% if (booking.status !== 'Confirmed'||booking.status === 'Pending') { %>
               <form action="/bookings/<%= booking._id %>/confirm" method="POST">
@@ -54,3 +58,20 @@
   </div>
   <% } %>
 </section>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+  const start = flatpickr("#start", {
+    dateFormat: "Y-m-d",
+    minDate: "today",
+    onChange: function(selectedDates, dateStr, instance) {
+      if (selectedDates.length > 0) {
+        end.set("minDate", dateStr);
+      }
+    }
+  });
+
+  const end= flatpickr("#end", {
+    dateFormat: "Y-m-d",
+    minDate: "today"
+  });
+</script>
