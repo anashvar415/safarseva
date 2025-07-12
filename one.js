@@ -469,7 +469,7 @@ app.delete("/listing/:id", isLoggedIn,async (req, res) => {
         }
 
      await review.deleteMany({ _id: { $in: foundListing.reviews || [] } });
-        await foundListing.findByIdAndDelete(id);
+        await listing.findByIdAndDelete(id);
         res.redirect("/listing");
 
 });
