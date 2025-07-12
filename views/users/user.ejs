@@ -61,7 +61,7 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
  
-  const start = flatpickr("#start", {
+  const start = flatpickr("#start-<%= listing._id %>", {
     dateFormat: "Y-m-d",
     minDate: "today",
     onChange: function(selectedDates, dateStr, instance) {
@@ -69,7 +69,7 @@
         end.set("minDate", dateStr);
       }
     }
-  }); const end= flatpickr("#end", {
+  }); const end= flatpickr("#end-<%= listing._id %>", {
     dateFormat: "Y-m-d",
     minDate: "today"
   });
