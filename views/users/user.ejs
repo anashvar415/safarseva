@@ -32,19 +32,32 @@
               <p class="card-text text-muted"><i class="bi bi-geo-alt-fill"></i> <%= listing.location %></p>
               <a href="/listing/<%= listing._id %>/edit" class="btn btn-outline-primary btn-sm">Edit</a>
             <a href="/listing/<%= listing._id %>/bookings" class="btn btn-outline-secondary btn-sm">View Bookings</a>
-    
-    <h5 class="mb-1">Set Unavailable Dates</h5>
-  <form action="/listing/<%= listing._id %>/unavailable" method="POST" class="p-4 border rounded shadow-sm bg-light">
-    <div class="mb-3">
-      <label for="start" class="form-label">Start:</label>
-      <input type="text" id="start" name="start" class="form-control" required>
+    <button class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#unavailableModal-<%= listing._id %>"> Set Unavailable Dates </button>
+<div class="modal fade" id="unavailableModal-<%= listing._id %>" tabindex="-1" aria-labelledby="unavailableLabel-<%= listing._id %>" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="/listing/<%= listing._id %>/unavailable" method="POST">
+        <div class="modal-header">
+          <h5 class="modal-title" id="unavailableLabel-<%= listing._id %>">Set Unavailable Dates</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="start-<%= listing._id %>" class="form-label">Start:</label>
+            <input type="text" id="start-<%= listing._id %>" name="start" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="end-<%= listing._id %>" class="form-label">End:</label>
+            <input type="text" id="end-<%= listing._id %>" name="end" class="form-control" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Confirm dates</button>
+        </div>
+      </form>
     </div>
-    <div class="mb-3">
-      <label for="end" class="form-label">End:</label>
-      <input type="text" id="end" name="end" class="form-control" required>
-    </div>
-    <button type="submit" class="btn btn-primary">Confirm dates</button>
-  </form>  
+  </div>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
   const end= flatpickr("#end", {
