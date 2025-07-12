@@ -134,7 +134,8 @@ const dbUrl=  process.env.ATLAS_URL;
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_ID,
     clientSecret: process.env.GOOGLE_SECRET,
-    callbackURL: "/auth/google/callback"
+    callbackURL: "https://safarseva.onrender.com/auth/google/callback"
+
   },
   async function (accessToken, refreshToken, profile, done) {
     let userData = await user.findOne({ googleId: profile.id });
