@@ -8,6 +8,11 @@ username: { type: String, required: true, unique: true },
     type:Number,
     default:0
   }
+,googleId: {
+    type: String,
+    unique: true,
+   
+  }
 ,
 CodeExpires: Number
   

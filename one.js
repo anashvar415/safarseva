@@ -11,6 +11,7 @@ const passport = require('passport');
 const user = require('./models/user.js');
 const LocalStrategy = require('passport-local');
 const { sendMailtoUser} = require('./middleware');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 
 if(process.env.NODE_ENV !== "production") {
@@ -131,6 +132,24 @@ passport.deserializeUser(user.deserializeUser());
 
 
 const dbUrl=  process.env.ATLAS_URL;
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: "/auth/google/callback"
+  },
+  async function (accessToken, refreshToken, profile, done) {
+    let userData = await user.findOne({ googleId: profile.id });
+    if (!userData) {
+      userData = await user.create({
+        googleId: profile.id,
+        username: profile.displayName,
+        email: profile.emails[0].value,
+        
+      });
+    }
+    return done(null, userData);
+  }
+));
 
 
 async function main(){
@@ -161,6 +180,15 @@ app.use((req, res, next) => {
 app.get('/', (req, res) => {
     res.redirect('/listing');
 });
+app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+app.get('/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/login' }),
+  (req, res) => {
+    req.flash("success", "login successful")
+    res.redirect('/listing');
+  });
+
 
 app.get('/dashboard',isLoggedIn, async (req, res) => {
   const current = await user.findById(req.user._id);
