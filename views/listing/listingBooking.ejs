@@ -23,8 +23,17 @@
               <%= booking.status %>
             </span>
           </p>
+           <div class="col-md-5">
+      <label for="start" class="form-label">Start Date</label>
+      <input type="date" name="start" class="form-control" required>
+    </div>
+    <div class="col-md-5">
+      <label for="end" class="form-label">End Date</label>
+      <input type="date" name="end" class="form-control" required>
+    </div>
+
           <div class="d-flex gap-2">
-            <% if (booking.status !== 'Confirmed') { %>
+            <% if (booking.status !== 'Confirmed'||booking.status === 'Pending') { %>
               <form action="/bookings/<%= booking._id %>/confirm" method="POST">
                 <button class="btn btn-success btn-sm">Confirm</button>
               </form>

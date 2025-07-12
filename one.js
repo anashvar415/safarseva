@@ -410,7 +410,23 @@ app.get('/logout', isLoggedIn, (req, res) => {
         res.redirect('/listing');
     })});
 
+app.post('/listing/:id/unavailable', async (req, res) => {
+  const { start, end } = req.body;
+  const listingData = await listing.findById(req.params.id);
 
+  if (!listingData.unavailableDates) {
+    listingData.unavailableDates = [];
+  }
+
+  listingData.unavailableDates.push({
+    start: new Date(start),
+    end: new Date(end)
+  });
+
+  await listingData.save();
+  req.flash('success', 'Dates have been marked as unavailable.');
+  res.redirect(`/listing/${req.params.id}/book`);
+});
     app.put("/listing/:id", upload.single('listing[image]'),async (req,res)=>{
         let {id}= req.params;
         const updateData = { ...req.body.listing };
@@ -500,7 +516,7 @@ const bookingData= allBooking[0];
     req.flash("error", "No booking found");
     return res.redirect("/dashboard");
   }
-bookingData.set('status', 'Confirmed');
+
 
     await bookingData.save();
 
