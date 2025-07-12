@@ -439,14 +439,14 @@ app.delete("/listing/:id", isLoggedIn,async (req, res) => {
      await   listing.findByIdAndDelete(id);
          res.redirect('/listing');
 });
-app.get('/listing/:id/book',isLoggedIn, async (req, res) => {
+app.get('/listing/:id/book', async (req, res) => {
     const listingData = await listing.findById(req.params.id);
     res.render("./listing/book.ejs",{listingData})
 
 
 
 });
-app.post('/listing/:id/book', isLoggedIn, async (req, res) => {
+app.post('/listing/:id/book',  async (req, res) => {
   const { checkIn, checkOut } = req.body;
   const listingData = await listing.findById(req.params.id);
 
@@ -488,7 +488,7 @@ app.post('/listing/:id/book', isLoggedIn, async (req, res) => {
 
   res.redirect('/payment');
 });
-app.get('/payment', isLoggedIn, async (req, res,next) => {
+app.get('/payment', async (req, res,next) => {
   const allBooking = await booking.find({ userId: req.user._id })
   .sort({ createdAt: -1 })
   .limit(1)
@@ -505,7 +505,7 @@ bookingData.set('status', 'Confirmed');
     await bookingData.save();
 
     req.bookingDetails = {
-      userEmail: bookingData.userId.email,
+      userEmail: req.user.email,
       title: bookingData.listingId.title,
       checkIn: bookingData.checkIn,
       checkOut: bookingData.checkOut,

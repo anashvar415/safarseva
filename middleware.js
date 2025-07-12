@@ -12,6 +12,9 @@ module.exports.saveReturnTo = (req, res, next) => {
     } 
     next();
 }
+
+module.exports.sendMailtoUser = async (req, res, next) => {
+  
 const nodemailer = require("nodemailer");
 const transporter = nodemailer.createTransport({
   service: 'Gmail',
@@ -20,8 +23,6 @@ const transporter = nodemailer.createTransport({
     pass: process.env.PASSWORD
   }
 });
-
-module.exports.sendMailtoUser = async (req, res, next) => {
   const { status, userEmail, title, checkIn, checkOut } = req.bookingDetails;
 let mailOptions;
   if (status === 'Confirmed') {
@@ -41,7 +42,7 @@ let mailOptions;
     return next();
   }
 
-  
+
   try {
     await transporter.sendMail(mailOptions);
     next();

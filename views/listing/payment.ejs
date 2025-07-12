@@ -1,4 +1,16 @@
  <% layout("/layouts/boilerplate.ejs") %>
+ <% if (success && success.length > 0) { %>
+  <div class="alert alert-dismissible fade show  alert-success text-center fw-bold">
+    <%= success[0] %>
+     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% } %>
+  <% if (error && error.length > 0) { %>
+  <div class="alert alert-danger alert-dismissible fade show text-center fw-bold" role="alert">
+    <%= error[0] %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% } %>
  <div class="d-flex justify-content-center align-items-center vh-100">
 
     <div class="card shadow-lg border-0 w-100 " style="max-width: 500px;">
