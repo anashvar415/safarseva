@@ -225,7 +225,7 @@ app.post('/bookings/:id/confirm', async (req, res, next) => {
 
     next(); 
   }, sendMailtoUser, (req, res) => {
-  res.redirect("/explore");
+  res.redirect("/dashboard");
 });
 app.post('/bookings/:id/cancel', async (req, res, next) => {
  
@@ -241,7 +241,7 @@ app.post('/bookings/:id/cancel', async (req, res, next) => {
 
     next(); 
 }, sendMailtoUser, (req, res) => {
-  res.redirect("/explore");
+  res.redirect("/dashboard");
 });
 
 app.get('/signup', (req, res) => {
@@ -425,7 +425,7 @@ app.post('/listing/:id/unavailable', async (req, res) => {
 
   await listingData.save();
   req.flash('success', 'Dates have been marked as unavailable.');
-  res.redirect(`/listing/${req.params.id}/book`);
+  res.redirect(`/dashboard`);
 });
     app.put("/listing/:id", upload.single('listing[image]'),async (req,res)=>{
         let {id}= req.params;
